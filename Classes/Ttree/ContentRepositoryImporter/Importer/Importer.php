@@ -11,6 +11,7 @@ use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Exception;
 use TYPO3\Flow\Log\SystemLoggerInterface;
 use TYPO3\Flow\Utility\Algorithms;
+use TYPO3\Flow\Utility\Arrays;
 use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
 use TYPO3\TYPO3CR\Domain\Repository\NodeDataRepository;
 use TYPO3\TYPO3CR\Domain\Service\ContextFactoryInterface;
@@ -90,14 +91,23 @@ abstract class Importer implements ImporterInterface {
 	}
 
 	/**
+	 * @param array $configuration
+	 * @return \TYPO3\TYPO3CR\Domain\Service\Context
+	 */
+	protected function getContentContext(array $configuration = []) {
+		$configuration = Arrays::arrayMergeRecursiveOverrule([
+			'workspaceName' => 'live', 'invisibleContentShown' => TRUE
+		], $configuration);
+
+		return $this->contextFactory->create($configuration);
+	}
+
+	/**
 	 * Initialize
 	 */
 	protected function initialize() {
 		$this->logPrefix = $this->logPrefix ?: Algorithms::generateRandomString(12);
-
-		$contextConfiguration = ['workspaceName' => 'live', 'invisibleContentShown' => TRUE];
-		$context = $this->contextFactory->create($contextConfiguration);
-		$this->rootNode = $context->getRootNode();
+		$this->rootNode = $this->getContentContext()->getRootNode();
 
 		$siteNodePath = $this->options['siteNodePath'];
 		$this->siteNode = $this->rootNode->getNode($siteNodePath);
