@@ -27,27 +27,7 @@ class PresetPartDefinition  {
 	/**
 	 * @var string
 	 */
-	protected $label;
-
-	/**
-	 * @var string
-	 */
 	protected $logPrefix;
-
-	/**
-	 * @var string
-	 */
-	protected $dataProviderClassName;
-
-	/**
-	 * @var array
-	 */
-	protected $dataProviderOptions;
-
-	/**
-	 * @var string
-	 */
-	protected $importerClassName;
 
 	/**
 	 * @var integer
@@ -78,21 +58,9 @@ class PresetPartDefinition  {
 			throw new InvalidArgumentException('Missing or invalid "__currentPartName" in preset part settings', 1426156155);
 		}
 		$this->currentPartName = $setting['__currentPartName'];
-		if (!isset($setting['label']) || !is_string($setting['label'])) {
-			throw new InvalidArgumentException('Missing or invalid "Label" in preset part settings', 1426156157);
-		}
 		$this->label = (string)$setting['label'];
-		if (!isset($setting['dataProviderClassName']) || !is_string($setting['dataProviderClassName'])) {
-			throw new InvalidArgumentException('Missing or invalid "dataProviderClassName" in preset part settings', 1426156158);
-		}
-		$this->dataProviderClassName = (string)$setting['dataProviderClassName'];
-		if (!isset($setting['importerClassName']) || !is_string($setting['importerClassName'])) {
-			throw new InvalidArgumentException('Missing or invalid "dataProviderClassName" in preset part settings', 1426156159);
-		}
-		$this->importerClassName = (string)$setting['importerClassName'];
 		$this->batchSize = isset($setting['batchSize']) ? (integer)$setting['batchSize'] : NULL;
 		$this->offset = isset($setting['batchSize']) ? 0 : NULL;
-		$this->dataProviderOptions = isset($setting['dataProviderOptions']) ? $setting['dataProviderOptions'] : [];
 		$this->currentBatch = 1;
 		$this->logPrefix = $logPrefix ?: Algorithms::generateRandomString(12);
 	}
@@ -113,8 +81,6 @@ class PresetPartDefinition  {
 			'presetName' => $this->currentPresetName,
 			'partName' => $this->currentPartName,
 			'logPrefix' => $this->logPrefix,
-			'dataProviderClassName' => $this->dataProviderClassName,
-			'importerClassName' => $this->importerClassName,
 			'currentBatch' => $this->currentBatch
 		];
 		if ($this->batchSize) {
@@ -129,29 +95,8 @@ class PresetPartDefinition  {
 	/**
 	 * @return string
 	 */
-	public function getLabel() {
-		return $this->label;
-	}
-
-	/**
-	 * @return string
-	 */
 	public function getLogPrefix() {
 		return $this->logPrefix;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getDataProviderClassName() {
-		return $this->dataProviderClassName;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getImporterClassName() {
-		return $this->importerClassName;
 	}
 
 	/**

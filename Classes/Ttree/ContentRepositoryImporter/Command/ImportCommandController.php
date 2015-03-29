@@ -157,16 +157,18 @@ class ImportCommandController extends CommandController {
 	/**
 	 * @param string $presetName
 	 * @param string $partName
-	 * @param string $dataProviderClassName
-	 * @param string $importerClassName
 	 * @param string $logPrefix
 	 * @param integer $offset
 	 * @param integer $batchSize
 	 * @return integer
 	 * @Flow\Internal
 	 */
-	public function executeBatchCommand($presetName, $partName, $dataProviderClassName, $importerClassName, $logPrefix, $offset = NULL, $batchSize = NULL) {
+	public function executeBatchCommand($presetName, $partName, $logPrefix, $offset = NULL, $batchSize = NULL) {
 		try {
+			$options = Arrays::getValueByPath($this->settings, implode('.', ['presets', $presetName, $partName]));
+			$dataProviderClassName = $options['dataProviderClassName'];
+			$importerClassName = $options['importerClassName'];
+
 			$dataProviderOptions = Arrays::getValueByPath($this->settings, implode('.', ['presets', $presetName, $partName, 'dataProviderOptions']));
 			/** @var DataProvider $dataProvider */
 			$dataProvider = $dataProviderClassName::create(is_array($dataProviderOptions) ? $dataProviderOptions : [], $offset, $batchSize);
